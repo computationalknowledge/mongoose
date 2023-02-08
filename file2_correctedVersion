@@ -1,0 +1,66 @@
+const mongoose = require('mongoose');
+
+// Connect to MongoDB
+mongoose.connect('mongodb://192.168.56.1:27017/feb7test', {
+  bufferMaxEntries: 0,
+  connectTimeoutMS: 30000,
+  socketTimeoutMS: 30000
+});
+
+// Define the schema for the collection
+const userSchema = new mongoose.Schema({
+  name: String,
+  favcolor: String
+});
+
+// Compile the schema into a model
+const User = mongoose.model('User', userSchema);
+
+// Create a new user document
+async function createUser() {
+  const user = new User({ name: 'James Bond', spynumber: '007' });
+  try {
+    await user.save();
+    console.log(`User created: ${user}`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Find all user documents
+async function findUsers() {
+  try {
+    const users = await User.find({});
+    console.log(`Users found: ${users}`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Update a user document
+async function updateUser() {
+  try {
+    const user = await User.findOne({ name: 'John Doe' });
+    user.favcolor = 'red';
+    await user.save();
+    console.log(`User updated: ${user}`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Remove a user document
+async function removeUser() {
+  try {
+    await User.remove({ name: 'John Doe' });
+    console.log('User removed');
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Call the functions
+createUser();
+// findUsers();
+// updateUser();
+// removeUser();
